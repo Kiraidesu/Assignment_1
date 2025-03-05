@@ -140,7 +140,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
                 .on("end", async () => {
                     const { validData, invalidEntries } = validateData(results);
                     await insertData(validData);
-                    res.status(200).json({ message: "CSV file processed successfully", valid_entries: validData.length, invalid_entries });
+                    res.status(200).json({ message: "CSV file processed successfully", valid_entries: validData.length, invalid_entries:invalidEntries.length });
                 });
         } else if (fileExt === ".xlsx") {
             const workbook = new ExcelJS.Workbook();
@@ -161,7 +161,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
             
             const { validData, invalidEntries } = validateData(results);
             await insertData(validData);
-            res.status(200).json({ message: "Excel file processed successfully", valid_entries: validData.length, invalid_entries });
+            res.status(200).json({ message: "Excel file processed successfully", valid_entries: validData.length, invalid_entries : invalidEntries.length });
         } else {
             return res.status(400).json({ error: "Invalid file type. Upload a CSV or Excel file." });
         }
