@@ -24,6 +24,8 @@ const ExcelJS = require("exceljs");
 const fs = require("fs");
 const path = require("path");
 
+const PDFDocument = require("pdfkit");
+
 const upload = multer({ dest: "uploads/" });
 
 
@@ -199,6 +201,57 @@ async function insertData(data) {
         );
     }
 }
+
+
+// 1️⃣ Export to PDF
+app.get("/export/pdf", async (req, res) => {
+    try {
+        const doc = new PDFDocument();
+        res.setHeader("Content-Disposition", "attachment; filename=report.pdf");
+        res.setHeader("Content-Type", "application/pdf");
+        doc.pipe(res);
+
+        doc.fontSize(16).text("Scorecard Report", { align: "center" });
+        doc.moveDown();
+
+        // Fetch data from the database
+        const result = await pool.query("SELECT * FROM scores;");
+        const data = result.rows;
+
+        data.forEach((row, index) => {
+            doc.text(`${index + 1}. ${row.entity_name} - ${row.criteria}, Score: ${row.score}, Weight: ${row.weight}`);
+        });
+
+        doc.end();
+    } catch (error) {
+        res.status(500).json({ error: "Error generating PDF" });
+    }
+});
+
+// 2️⃣ Export to Excel
+app.get("/export/excel", async (req, res) => {
+    try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Scorecard Report");
+
+        worksheet.addRow(["Entity Name", "Criteria", "Score", "Weight"]);
+        
+        // Fetch data from the database
+        const result = await pool.query("SELECT * FROM scores;");
+        const data = result.rows;
+        
+        data.forEach(row => {
+            worksheet.addRow([row.entity_name, row.criteria, row.score, row.weight]);
+        });
+
+        res.setHeader("Content-Disposition", "attachment; filename=report.xlsx");
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        res.status(500).json({ error: "Error generating Excel file" });
+    }
+});
 
 // default run, path added
 app.get("/", (req, res) => {
