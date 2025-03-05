@@ -202,6 +202,15 @@ async function insertData(data) {
     }
 }
 
+// 1️⃣ Comparative Analysis API
+app.get("/comparative-analysis", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM scores ORDER BY score DESC;");
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching comparative data" });
+    }
+});
 
 // 1️⃣ Export to PDF
 app.get("/export/pdf", async (req, res) => {
