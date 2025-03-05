@@ -29,7 +29,7 @@ const PDFDocument = require("pdfkit");
 const upload = multer({ dest: "uploads/" });
 
 
-// 1️⃣ Add a new score
+// Add a new score
 app.post("/score/add", async (req, res) => {
     try {
         const { entity_name, criteria, score, weight } = req.body;
@@ -47,7 +47,7 @@ app.post("/score/add", async (req, res) => {
     }
 });
 
-// 2️⃣ Get scores for an entity
+//  Get scores for an entity
 app.get("/score/:id", async (req, res) => {
     try {
         const { id } = req.params;
@@ -63,7 +63,7 @@ app.get("/score/:id", async (req, res) => {
     }
 });
 
-// 3️⃣ Set weights dynamically (Improved)
+//  Set weights dynamically (Improved)
 app.post("/weights/set", async (req, res) => {
     try {
         const { criteria, weight } = req.body;
@@ -82,7 +82,7 @@ app.post("/weights/set", async (req, res) => {
     }
 });
 
-// 4️⃣ Calculate final weighted score
+//  Calculate final weighted score
 app.get("/score/calculate/:entity_name", async (req, res) => {
     try {
         const { entity_name } = req.params;
@@ -123,7 +123,7 @@ app.get("/", (req, res) => {
 
 
 
-// 5️⃣ Upload CSV/Excel file
+// Upload CSV/Excel file
 app.post("/upload", upload.single("file"), async (req, res) => {
     try {
         if (!req.file) {
@@ -202,7 +202,7 @@ async function insertData(data) {
     }
 }
 
-// 1️⃣ Comparative Analysis API
+// Comparative Analysis API
 app.get("/comparative-analysis", async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM scores ORDER BY score DESC;");
@@ -212,7 +212,7 @@ app.get("/comparative-analysis", async (req, res) => {
     }
 });
 
-// 1️⃣ Export to PDF
+//  Export to PDF
 app.get("/export/pdf", async (req, res) => {
     try {
         const doc = new PDFDocument();
@@ -237,7 +237,7 @@ app.get("/export/pdf", async (req, res) => {
     }
 });
 
-// 2️⃣ Export to Excel
+//  Export to Excel
 app.get("/export/excel", async (req, res) => {
     try {
         const workbook = new ExcelJS.Workbook();
