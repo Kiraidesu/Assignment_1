@@ -12,3 +12,10 @@ Postgres
 PgAdmin
 
 Note - I generally use Notepad++ for writing codes. (Thanks for understanding) 
+
+Additionally Node modules - 
+
+exceljs
+pdfkit
+
+// Use "npm install {_name_}" in CLI
